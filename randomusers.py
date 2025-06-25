@@ -570,6 +570,9 @@ randomuser_data = {
     }
 }
 
+def get_full_name(user: dict) -> str:
+    return f"{user['name']['first']} {user['name']['last']}"
+
 
 def get_full_names(data: dict) -> list[str]:
     """
@@ -769,13 +772,14 @@ def find_users_in_timezone(data: dict, offset: str) -> list[dict]:
     """
     result = []
     for user in data['result']:
-        if user['location']['timezone']['ofset'] == offset:
+        if user['location']['timezone']['offset'] == offset:
             result.append({
              "name" : get_full_name(user)  ,
+             'city' : user['location']['city']
              
-                
-            })
-
+             })
+    return result       
+            
 
 def get_registered_before_year(data: dict, year: int) -> list[dict]:
     """
@@ -788,7 +792,13 @@ def get_registered_before_year(data: dict, year: int) -> list[dict]:
     Returns:
         list[dict]: List of users with full name and registration date.
     """
-    pass
+    result = []
+    for user in data['results']:
+        year = int(user['registered']['age'])
+        if year >= 2010:
+            user.append(user)
+    
+    return result
 
 
 def run_functions() -> None:
@@ -800,10 +810,9 @@ def run_functions() -> None:
     #print(count_users_by_gender(randomuser_data))
     #print(get_emails_of_older_than(randomuser_data , 60))
     #pprint.pprint(sort_users_by_age(randomuser_data, True))
-    print(find_users_in_timezone(randomuser_data, '+3.30'))
-    
-    
+    #print(find_users_in_timezone(randomuser_data, '+3.30'))
+    #print(get_registered_before_year(randomuser_data, 2010))
 
-
+           
 
 run_functions()
